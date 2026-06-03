@@ -1,5 +1,5 @@
+import { useParams } from 'react-router-dom'
 import { Challenge } from '../types/challengeCard'
-import ChallengeCard from '../components/ChallengeCard'
 
 const challenges: Challenge[] = [
   {
@@ -30,14 +30,18 @@ const challenges: Challenge[] = [
   },
 ]
 
-export default function DashboardPage() {
+export default function ChallengeDetailPage() {
+  const { id } = useParams()
+  /*fetch challenge by id */
+
+  const challenge = challenges.find((c) => c.id === id)
+  console.log(challenge)
+  if (!challenge) return <p>Challenge not found</p>
   return (
     <div>
-      <h1>Dashboard</h1>
-
-      {challenges.map((challenge) => (
-        <ChallengeCard key={challenge.id} challengeCard={challenge} />
-      ))}
+      <h1>{challenge.habitName}</h1>
+      <p>Prize pool: ${challenge.prizePool}</p>
+      <p>{challenge.daysRemaining} days left</p>
     </div>
   )
 }

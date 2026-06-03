@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
-import CreateBetPage from './pages/CreateBetPage'
-import BetDetailPage from './pages/BetDetailPage'
+import CreateChallengePage from './pages/CreateChallengePage'
+import ChallengeDetailPage from './pages/ChallengeDetailPage'
 
 function App() {
   return (
@@ -10,15 +10,15 @@ function App() {
       <nav>
         <Link to="/">Home</Link> |{' '}
         <Link to="/dashboard">Dashboard</Link> |{' '}
-        <Link to="/bet/new">Create Bet</Link> |{' '}
-        <Link to="/bet/123">Bet #123 (example)</Link>
+        <Link to="/challenge/new">Create Challenge</Link> |{' '}
+        <Link to="/challenge/123">Challenge #123 (example)</Link>
       </nav>
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/bet/new" element={<CreateBetPage />} />
-        <Route path="/bet/:id" element={<BetDetailPage />} />
+        <Route path="/challenge/new" element={<CreateChallengePage />} />
+        <Route path="/challenge/:id" element={<ChallengeDetailPage />} />
       </Routes>
     </BrowserRouter>
   )
