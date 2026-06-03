@@ -1,10 +1,18 @@
 // export betcard type
-export type Bet = {
-    id: string
-    habitName: string
-    opponentName: string
-    yourStreak: number
-    theirStreak: number
-    potAmount: number
-    daysRemaining: number
-  }
+export type Player = {
+  id: string
+  name: string
+  streak: number
+  checkedInToday: boolean
+}
+
+export type Challenge = {
+  id: string
+  habitName: string
+  duration: number
+  entryFee: number
+  prizePool: number
+  players: Player[]
+  daysRemaining: number
+  status: 'active' | 'completed'
+}

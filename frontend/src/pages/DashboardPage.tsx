@@ -1,24 +1,32 @@
-import { Bet } from '../types/betCard'
+import { Challenge } from '../types/betCard'
 import BetCard from '../components/BetCard'
 
-const bets: Bet[] = [
+const bets: Challenge[] = [
   {
     id: '1',
     habitName: 'Morning run',
-    opponentName: 'Alex',
-    yourStreak: 12,
-    theirStreak: 9,
-    potAmount: 50,
+    duration: 30,
+    entryFee: 25,
+    prizePool: 50,
     daysRemaining: 18,
+    status: 'active',
+    players: [
+      { id: 'u1', name: 'You', streak: 12, checkedInToday: true },
+      { id: 'u2', name: 'Alex', streak: 9, checkedInToday: false },
+    ],
   },
   {
     id: '2',
     habitName: 'No sugar',
-    opponentName: 'Jordan',
-    yourStreak: 5,
-    theirStreak: 7,
-    potAmount: 25,
+    duration: 30,
+    entryFee: 25,
+    prizePool: 50,
     daysRemaining: 25,
+    status: 'active',
+    players: [
+      { id: 'u1', name: 'You', streak: 5, checkedInToday: false },
+      { id: 'u3', name: 'Jordan', streak: 7, checkedInToday: true },
+    ],
   },
 ]
 
