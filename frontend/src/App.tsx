@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
 import CreateChallengePage from './pages/CreateChallengePage'
-import ChallengeDetailPage from './pages/ChallengeDetailPage'
 import { Challenge } from './types/challengeCard'
+import CheckInPage from './pages/CheckInPage'
 
 const initialChallenges: Challenge[] = [
   {
@@ -54,7 +54,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<DashboardPage challenges={challenges} />} />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
-        <Route path="/challenge/:id" element={<ChallengeDetailPage challenges={challenges} />} />
+        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} />} />
+
       </Routes>
     </BrowserRouter>
   )

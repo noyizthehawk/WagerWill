@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Challenge } from '../types/challengeCard'
+
 
 /*take in challengeCard object, and display it*/
 export default function ChallengeCard({ challengeCard }: { challengeCard: Challenge }) {
+  const navigate = useNavigate()
   return (
     <div>
       <h2>
@@ -13,7 +15,7 @@ export default function ChallengeCard({ challengeCard }: { challengeCard: Challe
       ))}
       <p>Prize pool: ${challengeCard.prizePool} · Entry: ${challengeCard.entryFee}</p>
       <p>{challengeCard.daysRemaining} days left · {challengeCard.status}</p>
-      <button onClick={() => console.log("Button clicked!")}>Check in</button>
+      <button onClick={() => navigate(`/challenge/${challengeCard.id}/checkin`)}>Check in</button>
     </div>
   )
 }
