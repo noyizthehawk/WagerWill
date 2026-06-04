@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Challenge } from '../types/challengeCard'
 
+/*take in challengeCard object, and display it*/
 export default function ChallengeCard({ challengeCard }: { challengeCard: Challenge }) {
   return (
     <div>

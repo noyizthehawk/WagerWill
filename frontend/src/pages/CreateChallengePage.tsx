@@ -1,13 +1,18 @@
 import CreateChallengeForm from '../components/CreateChallengeForm'
+import { Challenge } from '../types/challengeCard'
 
-export default function CreateChallengePage() {
+type Props = {
+  onAdd: (challenge: Challenge) => void
+}
+
+export default function CreateChallengePage({ onAdd }: Props) {
   return (
     <div>
       <div>
         <h1>Create a Challenge</h1>
         <p>Put your money where your mouth is</p>
       </div>
-      <CreateChallengeForm />
+      <CreateChallengeForm onAdd={onAdd} />
     </div>
   )
 }
