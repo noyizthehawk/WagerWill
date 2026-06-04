@@ -5,6 +5,7 @@ import DashboardPage from './pages/DashboardPage'
 import CreateChallengePage from './pages/CreateChallengePage'
 import { Challenge } from './types/challengeCard'
 import CheckInPage from './pages/CheckInPage'
+import ChallengeDetailPage from './pages/ChallengeDetailPage'
 
 const initialChallenges: Challenge[] = [
   {
@@ -55,7 +56,7 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage challenges={challenges} />} />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
         <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} />} />
-
+        <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} />} />
       </Routes>
     </BrowserRouter>
   )

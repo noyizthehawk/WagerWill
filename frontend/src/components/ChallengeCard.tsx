@@ -8,7 +8,7 @@ export default function ChallengeCard({ challengeCard }: { challengeCard: Challe
   return (
     <div>
       <h2>
-        <Link to={`/challenge/${challengeCard.id}`}>{challengeCard.habitName}</Link>
+        <Link to={`/challenge/${challengeCard.id}/challengedetail`}>{challengeCard.habitName}</Link>
       </h2>
       {challengeCard.players.map((p) => (
         <p key={p.id}>{p.name}: {p.streak} days {p.checkedInToday ? '✓' : ''}</p>
