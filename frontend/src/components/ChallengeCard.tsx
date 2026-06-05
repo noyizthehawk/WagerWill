@@ -15,7 +15,12 @@ export default function ChallengeCard({ challengeCard }: { challengeCard: Challe
       ))}
       <p>Prize pool: ${challengeCard.prizePool} · Entry: ${challengeCard.entryFee}</p>
       <p>{challengeCard.daysRemaining} days left · {challengeCard.status}</p>
-      <button onClick={() => navigate(`/challenge/${challengeCard.id}/checkin`)}>Check in</button>
+      <p>Type: {challengeCard.type}</p>
+      <button onClick={() => {
+        // go to check in page and increase streak
+        navigate(`/challenge/${challengeCard.id}/checkin`);
+      }}>Check in</button>
+        
     </div>
   )
 }

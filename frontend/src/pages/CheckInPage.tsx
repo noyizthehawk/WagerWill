@@ -1,24 +1,32 @@
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Challenge } from '../types/challengeCard'
 import { useState } from 'react'
 
 type Props = {
   challenges: Challenge[]
+  onCheckIn: (challengeId: string, playerId: string) => void
 }
 
-export default function CheckInPage({ challenges }: Props) {
+export default function CheckInPage({ challenges, onCheckIn }: Props) {
   const [evidenceFile, setEvidenceFile] = useState<File | null>(null) //state to handle user picks
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)//state to handle preview to show image
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null) //state to handle preview to show image
 
   const { id } = useParams()
+  const navigate = useNavigate()
   const challenge = challenges.find((c) => c.id === id)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      setEvidenceFile(file) //set new file 
+      setEvidenceFile(file) //set new file
       setPreviewUrl(URL.createObjectURL(file)) //set preview
     }
+  }
+
+  const handleConfirm = () => {
+    if (!challenge) return
+    onCheckIn(challenge.id, 'u1') // 'u1' is always "You" for now
+    navigate('/dashboard')
   }
 
   if (!challenge) {
@@ -36,8 +44,7 @@ export default function CheckInPage({ challenges }: Props) {
       {previewUrl && (
         <img src={previewUrl} alt="Evidence preview" width={300} />
       )}
-      
-      <button disabled={!evidenceFile} onClick={() => console.log('checked in!')}>
+      <button disabled={!evidenceFile} onClick={handleConfirm}>
         Confirm check in
       </button>
     </div>

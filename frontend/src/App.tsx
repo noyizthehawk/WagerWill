@@ -6,11 +6,12 @@ import CreateChallengePage from './pages/CreateChallengePage'
 import { Challenge } from './types/challengeCard'
 import CheckInPage from './pages/CheckInPage'
 import ChallengeDetailPage from './pages/ChallengeDetailPage'
-
+// dummy values
 const initialChallenges: Challenge[] = [
   {
     id: '1',
     habitName: 'Morning run',
+    type: 'running',
     duration: 30,
     entryFee: 25,
     prizePool: 50,
@@ -24,6 +25,7 @@ const initialChallenges: Challenge[] = [
   {
     id: '2',
     habitName: 'No sugar',
+    type: 'custom',
     duration: 30,
     entryFee: 25,
     prizePool: 50,
@@ -39,8 +41,22 @@ const initialChallenges: Challenge[] = [
 function App() {
   const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
 
+  //add a new challenge with setchallenges
   const addChallenge = (newChallenge: Challenge) => {
     setChallenges([...challenges, newChallenge])
+  }
+
+  const checkIn = (challengeId: string, playerId: string) => {
+    setChallenges(challenges.map((c) => { //update the challenge
+      if (c.id !== challengeId) return c   //if the challenge is not the one we want to update
+      return {
+        ...c, //copy the old challenge
+        players: c.players.map((p) => {
+          if (p.id !== playerId) return p
+          return { ...p, streak: p.streak + 1, checkedInToday: true }
+        })
+      }
+    }))
   }
 
   return (
@@ -55,7 +71,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<DashboardPage challenges={challenges} />} />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
-        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} />} />
+        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} />} />
         <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} />} />
       </Routes>
     </BrowserRouter>

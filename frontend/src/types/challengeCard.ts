@@ -6,9 +6,12 @@ export type Player = {
   checkedInToday: boolean
 }
  /*chllenge card tkaing a player object */
+export type ChallengeType = 'running' | 'gym' | 'cycling' | 'steps' | 'custom'
+
 export type Challenge = {
   id: string
   habitName: string
+  type: ChallengeType
   duration: number
   entryFee: number
   prizePool: number
