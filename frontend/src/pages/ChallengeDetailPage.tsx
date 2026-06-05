@@ -15,9 +15,16 @@ export default function ChallengeDetailPage({ challenges }: Props) {
   }
 
   return (
-    <div>
+    <div className="page">
       <h1>{challenge.habitName}</h1>
       <p>{challenge.status}</p>
+      <div>
+      {challenge.players
+          .sort((a, b) => b.streak - a.streak)
+          .map((p) => (
+            <p key={p.id}>{p.name}: {p.streak} days</p>
+          ))}
+      </div>
     </div>
   )
 }

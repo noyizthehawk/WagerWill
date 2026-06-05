@@ -3,8 +3,7 @@ header {
   display: flex;
   align-items: center;
   padding: 1rem 1.5rem;
-  background: linear-gradient(135deg, #ff4d00, #ff006e);
-  box-shadow: 0 4px 20px rgba(255, 77, 0, 0.4);
+  
 }
 
 .user-button {

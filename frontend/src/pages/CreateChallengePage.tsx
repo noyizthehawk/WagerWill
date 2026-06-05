@@ -7,7 +7,7 @@ type Props = {
 
 export default function CreateChallengePage({ onAdd }: Props) {
   return (
-    <div>
+    <div className="page">
       <div>
         <h1>Create a Challenge</h1>
         <p>Put your money where your mouth is</p>
