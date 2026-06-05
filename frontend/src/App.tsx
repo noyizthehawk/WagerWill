@@ -62,11 +62,11 @@ function App() {
   return (
     <BrowserRouter>
       <nav className="flex items-center gap-6 px-6 py-4 border-b border-white/10">
-    <span className="font-bold text-white mr-4">WagerWill</span>
-    <Link to="/">Home</Link>
-    <Link to="/dashboard">Dashboard</Link>
-    <Link to="/challenge/new">Create Challenge</Link>
-    <button className="ml-auto w-9 h-9 rounded-full bg-orange-500 text-white font-bold text-sm absolute top-2 right-4">
+    <span className="font-bold text-white mr-4 ">WagerWill</span>
+      <Link to="/">Home</Link>
+      <Link to="/dashboard">Dashboard</Link>
+      <Link to="/challenge/new">Create Challenge</Link>
+    <button className="ml-auto w-9 h-9 rounded-full bg-green-500 text-white font-bold text-sm absolute top-2 right-4">
     </button>
   </nav>
       <Routes>

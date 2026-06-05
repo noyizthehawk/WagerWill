@@ -1,26 +1,63 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Challenge } from '../types/challengeCard'
+import { Challenge, ChallengeType } from '../types/challengeCard'
 
+const typeConfig: Record<ChallengeType, { emoji: string; gradient: string }> = {
+  running:  { emoji: '🏃', gradient: 'from-orange-500 to-red-600' },
+  gym:      { emoji: '💪', gradient: 'from-blue-500 to-purple-600' },
+  cycling:  { emoji: '🚴', gradient: 'from-green-400 to-teal-600' },
+  steps:    { emoji: '👟', gradient: 'from-yellow-400 to-orange-500' },
+  custom:   { emoji: '⚡', gradient: 'from-pink-500 to-rose-600' },
+}
 
-/*take in challengeCard object, and display it*/
 export default function ChallengeCard({ challengeCard }: { challengeCard: Challenge }) {
   const navigate = useNavigate()
+  const config = typeConfig[challengeCard.type]
+
   return (
-    <div>
-      <h2>
-        <Link to={`/challenge/${challengeCard.id}/challengedetail`}>{challengeCard.habitName}</Link>
-      </h2>
-      {challengeCard.players.map((p) => (
-        <p key={p.id}>{p.name}: {p.streak} days {p.checkedInToday ? '✓' : ''}</p>
-      ))}
-      <p>Prize pool: ${challengeCard.prizePool} · Entry: ${challengeCard.entryFee}</p>
-      <p>{challengeCard.daysRemaining} days left · {challengeCard.status}</p>
-      <p>Type: {challengeCard.type}</p>
-      <button onClick={() => {
-        // go to check in page and increase streak
-        navigate(`/challenge/${challengeCard.id}/checkin`);
-      }}>Check in</button>
-        
+    <div className="rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/10 hover:border-white/20 transition cursor-pointer w-64 shrink-0">
+
+      {/* tile visual */}
+      <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
+        <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`}>
+          {config.emoji}
+        </div>
+      </Link>
+
+      {/* info */}
+      <div className="p-4 flex flex-col gap-3">
+        <div>
+          <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
+            <h2 className="text-white font-bold text-lg leading-tight hover:opacity-80 transition">
+              {challengeCard.habitName}
+            </h2>
+          </Link>
+          <p className="text-gray-400 text-sm mt-0.5">
+            {challengeCard.daysRemaining} days left · {challengeCard.status}
+          </p>
+        </div>
+
+        <div className="flex justify-between text-sm">
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wide">Prize</p>
+            <p className="text-white font-semibold">${challengeCard.prizePool}</p>
+          </div>
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wide">Entry</p>
+            <p className="text-white font-semibold">${challengeCard.entryFee}</p>
+          </div>
+          <div>
+            <p className="text-gray-500 text-xs uppercase tracking-wide">Players</p>
+            <p className="text-white font-semibold">{challengeCard.players.length}</p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => navigate(`/challenge/${challengeCard.id}/checkin`)}
+          className="w-full bg-white text-black font-semibold text-sm py-2 rounded-xl hover:bg-gray-200 transition"
+        >
+          Check in
+        </button>
+      </div>
     </div>
   )
 }

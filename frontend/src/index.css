@@ -56,12 +56,7 @@ p {
 }
 
 a {
-  color: var(--text);
   text-decoration: none;
-}
-
-a:hover {
-  color: var(--accent);
 }
 
 /* ── Buttons ── */

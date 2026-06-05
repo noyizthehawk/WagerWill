@@ -2,14 +2,12 @@ import './LandingPage.css'
 export default function LandingPage() {
   return (
     <div className="page">
-      <header className = "flex justify-center items-center min-h-screen" style={{ position: 'relative' }}>
-        <h1>WagerWill</h1>
-      </header>
-      <main>
-        <div className="flex flex-col items-center gap-4 mt-4">
-          <p>Put money on your habits. Winner takes the pot.</p>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+          <h1 className='text-green-500'>WagerWill</h1>
+          <h2 className='italic'>Put money on your habits. Winner takes the pot.</h2>
           <button type="button">Get Started</button>
-        </div>
+      </div>
+      <main>
       </main>
     </div>
     
