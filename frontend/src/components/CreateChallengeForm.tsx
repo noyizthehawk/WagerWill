@@ -23,7 +23,7 @@ export default function CreateChallengeForm({ onAdd }: Props) {
       [e.target.name]: e.target.value,
     })
   }
-
+  /**nandle submit */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 

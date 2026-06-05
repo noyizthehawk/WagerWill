@@ -7,6 +7,7 @@ type Props = {
 
 export default function ChallengeDetailPage({ challenges }: Props) {
   const { id } = useParams()
+  /**find the challege with id */
   const challenge = challenges.find((c) => c.id === id)
 
   if (!challenge) {

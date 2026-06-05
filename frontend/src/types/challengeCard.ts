@@ -5,7 +5,7 @@ export type Player = {
   streak: number
   checkedInToday: boolean
 }
-
+ /*chllenge card tkaing a player object */
 export type Challenge = {
   id: string
   habitName: string

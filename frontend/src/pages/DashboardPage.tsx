@@ -10,7 +10,7 @@ export default function DashboardPage({ challenges }: Props) {
     <div>
       <h1>Dashboard</h1>
 
-      {challenges.map((challenge) => (
+      {challenges.map((challenge) => (//take a challenfe card and display it. Check out component
         <ChallengeCard key={challenge.id} challengeCard={challenge} />
       ))}
     </div>
