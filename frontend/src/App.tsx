@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
 import DashboardPage from './pages/DashboardPage'
@@ -6,44 +6,27 @@ import CreateChallengePage from './pages/CreateChallengePage'
 import { Challenge } from './types/challengeCard'
 import CheckInPage from './pages/CheckInPage'
 import ChallengeDetailPage from './pages/ChallengeDetailPage'
-// dummy values
-const initialChallenges: Challenge[] = [
-  {
-    id: '1',
-    habitName: 'Morning run',
-    type: 'running',
-    duration: 30,
-    entryFee: 25,
-    prizePool: 50,
-    daysRemaining: 18,
-    status: 'active',
-    players: [
-      { id: 'u1', name: 'You', streak: 12, checkedInToday: true },
-      { id: 'u2', name: 'Alex', streak: 9, checkedInToday: false },
-    ],
-  },
-  {
-    id: '2',
-    habitName: 'No sugar',
-    type: 'custom',
-    duration: 30,
-    entryFee: 25,
-    prizePool: 50,
-    daysRemaining: 25,
-    status: 'active',
-    players: [
-      { id: 'u1', name: 'You', streak: 5, checkedInToday: false },
-      { id: 'u3', name: 'Jordan', streak: 7, checkedInToday: true },
-    ],
-  },
-]
-
 function App() {
-  const [challenges, setChallenges] = useState<Challenge[]>(initialChallenges)
+  const [challenges, setChallenges] = useState<Challenge[]>([])
+  const [loading, setLoading] = useState(true)
 
-  //add a new challenge with setchallenges
+  const fetchChallenges = () => {
+    fetch('/api/challenges')
+      .then((r) => r.json())
+      .then((data) => {
+        setChallenges(data)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchChallenges()
+  }, [])
+
+  // after adding a challenge, refetch from backend so data is always fresh
   const addChallenge = (newChallenge: Challenge) => {
-    setChallenges([...challenges, newChallenge])
+    fetchChallenges()
   }
 
   const checkIn = (challengeId: string, playerId: string) => {
@@ -71,7 +54,7 @@ function App() {
   </nav>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={<DashboardPage challenges={challenges} />} />
+        <Route path="/dashboard" element={loading ? <p className="p-6 text-white">Loading...</p> : <DashboardPage challenges={challenges} />} />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
         <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} />} />
         <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} />} />

@@ -10,7 +10,7 @@ export default function DashboardPage({ challenges }: Props) {
     <div className="p-6">
       <h1 className="text-white font-bold text-2xl mb-6">My Challenges</h1>
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {challenges.map((challenge) => (
+        {challenges.map((challenge) => ( // loop through the challenges
           <ChallengeCard key={challenge.id} challengeCard={challenge} />
         ))}
       </div>

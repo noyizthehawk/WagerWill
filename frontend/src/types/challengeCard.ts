@@ -19,3 +19,4 @@ export type Challenge = {
   daysRemaining: number
   status: 'active' | 'completed'
 }
+

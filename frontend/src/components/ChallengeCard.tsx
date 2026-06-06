@@ -1,12 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Challenge, ChallengeType } from '../types/challengeCard'
 
-const typeConfig: Record<ChallengeType, { emoji: string; gradient: string }> = {
-  running:  { emoji: '🏃', gradient: 'from-orange-500 to-red-600' },
-  gym:      { emoji: '💪', gradient: 'from-blue-500 to-purple-600' },
-  cycling:  { emoji: '🚴', gradient: 'from-green-400 to-teal-600' },
-  steps:    { emoji: '👟', gradient: 'from-yellow-400 to-orange-500' },
-  custom:   { emoji: '⚡', gradient: 'from-pink-500 to-rose-600' },
+
+const typeConfig: Record<ChallengeType, {  gradient: string }> = {
+  running:  {  gradient: 'from-orange-500 to-red-600' },
+  gym:      {  gradient: 'from-blue-500 to-purple-600' },
+  cycling:  { gradient: 'from-green-400 to-teal-600' },
+  steps:    { gradient: 'from-yellow-400 to-orange-500' },
+  custom:   { gradient: 'from-pink-500 to-rose-600' },
 }
 
 export default function ChallengeCard({ challengeCard }: { challengeCard: Challenge }) {
@@ -19,7 +20,7 @@ export default function ChallengeCard({ challengeCard }: { challengeCard: Challe
       {/* tile visual */}
       <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
         <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`}>
-          {config.emoji}
+          
         </div>
       </Link>
 

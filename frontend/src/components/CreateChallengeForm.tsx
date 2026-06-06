@@ -25,25 +25,27 @@ export default function CreateChallengeForm({ onAdd }: Props) {
     })
   }
   /**nandle submit */
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { //async function
     e.preventDefault()
 
-    const newChallenge: Challenge = {
-      id: Date.now().toString(), // temporary unique id
+    const response = await fetch('/api/challenges', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
       habitName: form.habitName,
       type: form.type,
       duration: Number(form.duration),
       entryFee: Number(form.entryFee),
-      prizePool: Number(form.entryFee), // just entry fee for now, grows with players
+      prizePool: Number(form.entryFee),
       daysRemaining: Number(form.duration),
       status: 'active',
-      players: [
-        { id: 'u1', name: 'You', streak: 0, checkedInToday: false },
-      ],
-    }
+    })
+    
+  })
 
-    onAdd(newChallenge)
-    navigate('/dashboard')
+  const newChallenge = await response.json()
+  onAdd(newChallenge)
+  navigate('/dashboard')
   }
 
   return (
