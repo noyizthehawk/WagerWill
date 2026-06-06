@@ -57,3 +57,10 @@ def create_challenge(challenge: ChallengeCreate): #pyndatic model
         "status": challenge.status,
     }).execute()
     return result.data[0]
+@app.delete("/api/challenges/{id}")
+def delete_challenge(id: str):
+    supabase.table("challenges").delete().eq("id", id).execute()
+    return {"message": "Challenge deleted"}
+    
+
+

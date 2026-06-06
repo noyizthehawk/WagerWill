@@ -1,30 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Challenge, ChallengeType } from '../types/challengeCard'
 
-
-const typeConfig: Record<ChallengeType, {  gradient: string }> = {
-  running:  {  gradient: 'from-orange-500 to-red-600' },
-  gym:      {  gradient: 'from-blue-500 to-purple-600' },
-  cycling:  { gradient: 'from-green-400 to-teal-600' },
-  steps:    { gradient: 'from-yellow-400 to-orange-500' },
-  custom:   { gradient: 'from-pink-500 to-rose-600' },
+const typeConfig: Record<ChallengeType, { gradient: string }> = {
+  running: { gradient: 'from-orange-500 to-red-600' },
+  gym:     { gradient: 'from-blue-500 to-purple-600' },
+  cycling: { gradient: 'from-green-400 to-teal-600' },
+  steps:   { gradient: 'from-yellow-400 to-orange-500' },
+  custom:  { gradient: 'from-pink-500 to-rose-600' },
 }
 
-export default function ChallengeCard({ challengeCard }: { challengeCard: Challenge }) {
+type Props = {
+  challengeCard: Challenge
+  onDelete: (id: string) => void
+}
+
+export default function ChallengeCard({ challengeCard, onDelete }: Props) {
   const navigate = useNavigate()
   const config = typeConfig[challengeCard.type]
 
   return (
     <div className="rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/10 hover:border-white/20 transition cursor-pointer w-64 shrink-0">
 
-      {/* tile visual */}
       <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
-        <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`}>
-          
-        </div>
+        <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`} />
       </Link>
 
-      {/* info */}
       <div className="p-4 flex flex-col gap-3">
         <div>
           <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
@@ -57,6 +57,12 @@ export default function ChallengeCard({ challengeCard }: { challengeCard: Challe
           className="w-full bg-white text-black font-semibold text-sm py-2 rounded-xl hover:bg-gray-200 transition"
         >
           Check in
+        </button>
+        <button
+          onClick={() => onDelete(challengeCard.id)}
+          className="w-full bg-red-500/10 text-red-400 font-semibold text-sm py-2 rounded-xl hover:bg-red-500/20 transition"
+        >
+          Delete
         </button>
       </div>
     </div>

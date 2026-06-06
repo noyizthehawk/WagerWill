@@ -29,6 +29,10 @@ function App() {
     fetchChallenges()
   }
 
+  const deleteChallenge = (challengeId: string) => {
+    setChallenges(challenges.filter((c) => c.id !== challengeId))
+  }
+
   const checkIn = (challengeId: string, playerId: string) => {
     setChallenges(challenges.map((c) => { //update the challenge
       if (c.id !== challengeId) return c   //if the challenge is not the one we want to update
@@ -54,10 +58,10 @@ function App() {
   </nav>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/dashboard" element={loading ? <p className="p-6 text-white">Loading...</p> : <DashboardPage challenges={challenges} />} />
+        <Route path="/dashboard" element={loading ? <p className="p-6 text-white">Loading...</p> : <DashboardPage challenges={challenges} onDelete={deleteChallenge} />} />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
         <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} />} />
-        <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} />} />
+        <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} />} />
       </Routes>
     </BrowserRouter>
   )

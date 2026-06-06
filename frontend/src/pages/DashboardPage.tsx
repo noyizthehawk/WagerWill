@@ -3,15 +3,16 @@ import ChallengeCard from '../components/ChallengeCard'
 
 type Props = {
   challenges: Challenge[]
+  onDelete: (id: string) => void
 }
 
-export default function DashboardPage({ challenges }: Props) {
+export default function DashboardPage({ challenges, onDelete }: Props) {
   return (
     <div className="p-6">
       <h1 className="text-white font-bold text-2xl mb-6">My Challenges</h1>
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {challenges.map((challenge) => ( // loop through the challenges
-          <ChallengeCard key={challenge.id} challengeCard={challenge} />
+        {challenges.map((challenge) => (
+          <ChallengeCard key={challenge.id} challengeCard={challenge} onDelete={onDelete} />
         ))}
       </div>
     </div>
