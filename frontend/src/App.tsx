@@ -10,7 +10,7 @@ function App() {
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchChallenges = () => {
+  const fetchChallenges = () => { //fetch challenges from backend
     fetch('/api/challenges')
       .then((r) => r.json())
       .then((data) => {
@@ -20,17 +20,18 @@ function App() {
       .catch(() => setLoading(false))
   }
 
-  useEffect(() => {
+  useEffect(() => { //fetch challenges on page load
     fetchChallenges()
-  }, [])
+  }, [])//empty dependency array, so it runs once on page load
 
   // after adding a challenge, refetch from backend so data is always fresh
   const addChallenge = (newChallenge: Challenge) => {
     fetchChallenges()
   }
 
-  const deleteChallenge = (challengeId: string) => {
-    setChallenges(challenges.filter((c) => c.id !== challengeId))
+  const deleteChallenge = async (challengeId: string) => {
+    await fetch(`/api/challenges/${challengeId}`, { method: 'DELETE' })
+    fetchChallenges()
   }
 
   const checkIn = (challengeId: string, playerId: string) => {
