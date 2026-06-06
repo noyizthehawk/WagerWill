@@ -25,7 +25,9 @@ export default function CheckInPage({ challenges, onCheckIn }: Props) {
 
   const handleConfirm = () => {
     if (!challenge) return
-    onCheckIn(challenge.id, 'u1') // 'u1' is always "You" for now
+    const me = challenge.players.find((p) => p.name === 'You')
+    if (!me) return
+    onCheckIn(challenge.id, me.id) // ← real player id from database
     navigate('/dashboard')
   }
 

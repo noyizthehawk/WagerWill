@@ -15,8 +15,8 @@ export default function ChallengeDetailPage({ challenges, onDelete }: Props) {
     return <div>Challenge not found</div>
   }
 
-  const handleDelete = () => {
-    onDelete(challenge.id)
+  const handleDelete = () => { // delete challenge
+    onDelete(challenge.id) //pass the id of the challenge to the onDelete function
     navigate('/dashboard')
   }
 

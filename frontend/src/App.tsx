@@ -34,17 +34,13 @@ function App() {
     fetchChallenges()
   }
 
-  const checkIn = (challengeId: string, playerId: string) => {
-    setChallenges(challenges.map((c) => { //update the challenge
-      if (c.id !== challengeId) return c   //if the challenge is not the one we want to update
-      return {
-        ...c, //copy the old challenge
-        players: c.players.map((p) => {
-          if (p.id !== playerId) return p
-          return { ...p, streak: p.streak + 1, checkedInToday: true }
-        })
-      }
-    }))
+  const checkIn = async (challengeId: string, playerId: string) => {
+    await fetch(`/api/challenges/${challengeId}/checkin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ player_id: playerId })
+    })
+    fetchChallenges() // refetch fresh data from backend after checkin saved
   }
 
   return (

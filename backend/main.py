@@ -13,6 +13,18 @@ supabase = create_client(
 
 app = FastAPI()
 
+
+
+class ChallengeCreate(BaseModel):
+    habitName: str
+    type: str
+    duration: int
+    entryFee: int
+    prizePool: int
+    daysRemaining: int
+    status: str
+class CheckInRequest(BaseModel):
+    player_id: str
 @app.get("/health") # run this function when the user goes to /health (decorator)
 def health():
     return {"status": "ok"}
@@ -43,15 +55,6 @@ def get_challenges():
         })
     return challenges
 
-class ChallengeCreate(BaseModel):
-    habitName: str
-    type: str
-    duration: int
-    entryFee: int
-    prizePool: int
-    daysRemaining: int
-    status: str
-
 @app.post("/api/challenges")
 def create_challenge(challenge: ChallengeCreate): #pyndatic model
     result = supabase.table("challenges").insert({
@@ -64,10 +67,25 @@ def create_challenge(challenge: ChallengeCreate): #pyndatic model
         "status": challenge.status,
     }).execute()
     return result.data[0]
+
 @app.delete("/api/challenges/{id}")
 def delete_challenge(id: str):
     supabase.table("challenges").delete().eq("id", id).execute()
     return {"message": "Challenge deleted"}
+
+
+@app.post("/api/challenges/{challenge_id}/checkin")
+def checkin(challenge_id: str, body: CheckInRequest):
+    # get current streak first
+    result = supabase.table("players").select("streak").eq("id", body.player_id).execute()
+    current_streak = result.data[0]["streak"]
+    
+    # update with incremented value
+    supabase.table("players")\
+        .update({"streak": current_streak + 1, "checked_in_today": True})\
+        .eq("id", body.player_id)\
+        .execute()
+    return {"message": "checked in"}
     
 
 
