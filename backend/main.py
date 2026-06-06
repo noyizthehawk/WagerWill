@@ -19,7 +19,7 @@ def health():
 
 @app.get("/api/challenges")
 def get_challenges():
-    result = supabase.table("challenges").select("*").execute()
+    result = supabase.table("challenges").select("*, players(*)").execute()
     challenges = []
     for row in result.data:
         challenges.append({
@@ -31,10 +31,17 @@ def get_challenges():
             "prizePool": row["prize_pool"],
             "daysRemaining": row["days_remaining"],
             "status": row["status"],
-            "players": []  
+            "players": [
+                {
+                    "id": str(p["id"]),
+                    "name": p["name"],
+                    "streak": p["streak"],
+                    "checkedInToday": p["checked_in_today"],
+                }
+                for p in row["players"]
+            ]
         })
     return challenges
-
 
 class ChallengeCreate(BaseModel):
     habitName: str
