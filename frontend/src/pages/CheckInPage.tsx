@@ -27,7 +27,7 @@ export default function CheckInPage({ challenges, onCheckIn }: Props) {
     if (!challenge) return
     const me = challenge.players.find((p) => p.name === 'You')
     if (!me) return
-    onCheckIn(challenge.id, me.id) // ← real player id from database
+    onCheckIn(challenge.id, me.id) // real player id from database
     navigate('/dashboard')
   }
 
