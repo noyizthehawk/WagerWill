@@ -14,10 +14,11 @@ const typeConfig: Record<ChallengeType, { gradient: string }> = {
 type Props = {
   challengeCard: Challenge
   onDelete: (id: string) => void
+  onLeave: (id: string) => void
   user: any
 }
 
-export default function ChallengeCard({ challengeCard, onDelete, user }: Props) {
+export default function ChallengeCard({ challengeCard, onDelete, onLeave, user }: Props) {
   const navigate = useNavigate()
   const config = typeConfig[challengeCard.type]
 
@@ -86,12 +87,21 @@ export default function ChallengeCard({ challengeCard, onDelete, user }: Props) 
         >
           Check in
         </button>
-        <button
-          onClick={() => onDelete(challengeCard.id)}
-          className="w-full bg-red-500/10 text-red-400 font-semibold text-sm py-2 rounded-xl hover:bg-red-500/20 transition"
-        >
-          Delete
-        </button>
+        {user?.id === challengeCard.userId ? (
+          <button
+            onClick={() => onDelete(challengeCard.id)}
+            className="w-full bg-red-500/10 text-red-400 font-semibold text-sm py-2 rounded-xl hover:bg-red-500/20 transition"
+          >
+            Delete
+          </button>
+        ) : (
+          <button
+            onClick={() => onLeave(challengeCard.id)}
+            className="w-full bg-yellow-500/10 text-yellow-400 font-semibold text-sm py-2 rounded-xl hover:bg-yellow-500/20 transition"
+          >
+            Leave
+          </button>
+        )}
         {user?.id === challengeCard.userId && (
          <button onClick={() => setShowInvite(true)}>Invite Friends</button>
         )}

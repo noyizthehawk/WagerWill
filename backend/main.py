@@ -129,6 +129,12 @@ def delete_challenge(id: str, authorization: str = Header(None)):
     supabase.table("challenges").delete().eq("id", id).eq("user_id", user_id).execute()
     return {"message": "Challenge deleted"}
 
+@app.delete("/api/challenges/{id}/leave")
+def leave_challenge(id: str, authorization: str = Header(None)):
+    user_id = get_user_id(authorization)
+    supabase_admin.table("players").delete().eq("challenge_id", id).eq("user_id", user_id).execute()
+    return {"message": "Left challenge"}
+
 
 @app.post("/api/challenges/{challenge_id}/checkin")
 def checkin(challenge_id: str, authorization: str = Header(None)):

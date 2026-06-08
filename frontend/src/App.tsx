@@ -62,6 +62,16 @@ function App() {
     fetchChallenges()
   }
 
+  const leaveChallenge = async (challengeId: string) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    await fetch(`/api/challenges/${challengeId}/leave`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    fetchChallenges()
+  }
+
   const deleteChallenge = async (challengeId: string) => {
     const { data: { session } } = await supabase.auth.getSession()
     const token = session?.access_token
@@ -112,7 +122,7 @@ function App() {
             element={
               !user ? <Navigate to="/login" /> : 
               loading ? <p className="p-6 text-white">Loading...</p> : 
-              <DashboardPage challenges={challenges} onDelete={deleteChallenge} user={user} />
+              <DashboardPage challenges={challenges} onDelete={deleteChallenge} onLeave={leaveChallenge} user={user} />
             } 
           />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
