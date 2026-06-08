@@ -87,6 +87,7 @@ def get_challenges(authorization: str = Header(None)):
             "players": [
                 {
                     "id": str(p["id"]),
+                    "userId": str(p["user_id"]),
                     "name": p["name"],
                     "streak": p["streak"],
                     "checkedInToday": p["checked_in_today"],
@@ -136,11 +137,14 @@ def leave_challenge(id: str, authorization: str = Header(None)):
     return {"message": "Left challenge"}
 
 
+class CheckInRequest(BaseModel):
+    evidence_url: str
+
 @app.post("/api/challenges/{challenge_id}/checkin")
-def checkin(challenge_id: str, authorization: str = Header(None)):
+def checkin(challenge_id: str, body: CheckInRequest, authorization: str = Header(None)):
     user_id = get_user_id(authorization)
 
-    result = supabase.table("players").select("id, streak")\
+    result = supabase_admin.table("players").select("id, streak")\
         .eq("challenge_id", challenge_id)\
         .eq("user_id", user_id)\
         .execute()
@@ -149,10 +153,18 @@ def checkin(challenge_id: str, authorization: str = Header(None)):
         raise HTTPException(status_code=404, detail="Player not found")
 
     player = result.data[0]
-    supabase.table("players")\
+
+    supabase_admin.table("players")\
         .update({"streak": player["streak"] + 1, "checked_in_today": True})\
         .eq("id", player["id"])\
         .execute()
+
+    supabase_admin.table("check_ins").insert({
+        "player_id": player["id"],
+        "challenge_id": int(challenge_id),
+        "evidence_url": body.evidence_url,
+    }).execute()
+
     return {"message": "checked in"}
 @app.post("/api/invites")
 def invite(invite: InviteCreate, authorization: str = Header(None)):

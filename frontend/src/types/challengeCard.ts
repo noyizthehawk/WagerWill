@@ -1,6 +1,7 @@
 // export betcard type
 export type Player = {
   id: string
+  userId: string
   name: string
   streak: number
   checkedInToday: boolean

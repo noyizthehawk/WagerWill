@@ -1,13 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Challenge } from '../types/challengeCard'
 import { useState } from 'react'
+import { supabase } from '../lib/supabase'
 
 type Props = {
   challenges: Challenge[]
-  onCheckIn: (challengeId: string, playerId: string) => void
+  onCheckIn: (challengeId: string, playerId: string, evidenceUrl: string) => void
+  user: any
 }
 
-export default function CheckInPage({ challenges, onCheckIn }: Props) {
+export default function CheckInPage({ challenges, onCheckIn, user }: Props) {
   const [evidenceFile, setEvidenceFile] = useState<File | null>(null) //state to handle user picks
   const [previewUrl, setPreviewUrl] = useState<string | null>(null) //state to handle preview to show image
 
@@ -23,11 +25,30 @@ export default function CheckInPage({ challenges, onCheckIn }: Props) {
     }
   }
 
-  const handleConfirm = () => {
-    if (!challenge) return
-    const me = challenge.players.find((p) => p.name === 'You')
+  const handleConfirm = async () => {
+    console.log('handleConfirm called')
+    if (!challenge || !evidenceFile) return
+    const me = challenge.players.find((p) => p.userId === user?.id)
+    console.log('me:', me)
     if (!me) return
-    onCheckIn(challenge.id, me.id) // real player id from database
+    console.log('uploading...')
+
+    // upload image to supabase storage
+    const fileName = `${challenge.id}/${me.id}/${Date.now()}`
+    const { error } = await supabase.storage
+      .from('Evidence')
+      .upload(fileName, evidenceFile)
+
+    if (error) {
+      console.error('Upload failed:', error.message)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('Evidence')
+      .getPublicUrl(fileName)
+
+    onCheckIn(challenge.id, me.id, publicUrl)
     navigate('/dashboard')
   }
 

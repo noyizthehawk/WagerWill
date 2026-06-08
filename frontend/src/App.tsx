@@ -82,13 +82,13 @@ function App() {
     fetchChallenges()
   }
 
-  const checkIn = async (challengeId: string, playerId: string) => {
+  const checkIn = async (challengeId: string, playerId: string, evidenceUrl: string) => {
     const { data: { session } } = await supabase.auth.getSession()
     const token = session?.access_token
     await fetch(`/api/challenges/${challengeId}/checkin`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ player_id: playerId })
+      body: JSON.stringify({ player_id: playerId, evidence_url: evidenceUrl })
     })
     fetchChallenges()
   }
@@ -126,7 +126,7 @@ function App() {
             } 
           />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
-        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} />} />
+        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} user={user} />} />
         <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
