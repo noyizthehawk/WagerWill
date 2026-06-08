@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
 from supabase import create_client
 from dotenv import load_dotenv
 import os
@@ -13,6 +13,15 @@ supabase = create_client(
 
 app = FastAPI()
 
+def get_user_id(authorization: str) -> str:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Missing token")
+    token = authorization.split(" ")[1]
+    result = supabase.auth.get_user(token)
+    if not result.user:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return str(result.user.id)
+
 
 
 class ChallengeCreate(BaseModel):
@@ -23,15 +32,14 @@ class ChallengeCreate(BaseModel):
     prizePool: int
     daysRemaining: int
     status: str
-class CheckInRequest(BaseModel):
-    player_id: str
 @app.get("/health") # run this function when the user goes to /health (decorator)
 def health():
     return {"status": "ok"}
 
 @app.get("/api/challenges")
-def get_challenges():
-    result = supabase.table("challenges").select("*, players(*)").execute()
+def get_challenges(authorization: str = Header(None)):
+    user_id = get_user_id(authorization)
+    result = supabase.table("challenges").select("*, players(*)").eq("user_id", user_id).execute()
     challenges = []
     for row in result.data:
         challenges.append({
@@ -56,8 +64,9 @@ def get_challenges():
     return challenges
 
 @app.post("/api/challenges")
-def create_challenge(challenge: ChallengeCreate): #pyndatic model
-    result = supabase.table("challenges").insert({
+def create_challenge(challenge: ChallengeCreate, authorization: str = Header(None)):
+    user_id = get_user_id(authorization)
+    challenge_result = supabase.table("challenges").insert({
         "habit_name": challenge.habitName,
         "type": challenge.type,
         "duration": challenge.duration,
@@ -65,25 +74,45 @@ def create_challenge(challenge: ChallengeCreate): #pyndatic model
         "prize_pool": challenge.prizePool,
         "days_remaining": challenge.daysRemaining,
         "status": challenge.status,
+        "user_id": user_id,
     }).execute()
-    return result.data[0]
+
+    challenge_id = challenge_result.data[0]["id"]
+
+    # create a player row for the challenge creator
+    supabase.table("players").insert({
+        "challenge_id": challenge_id,
+        "user_id": user_id,
+        "name": "You",
+        "streak": 0,
+        "checked_in_today": False,
+    }).execute()
+
+    return challenge_result.data[0]
 
 @app.delete("/api/challenges/{id}")
-def delete_challenge(id: str):
-    supabase.table("challenges").delete().eq("id", id).execute()
+def delete_challenge(id: str, authorization: str = Header(None)):
+    user_id = get_user_id(authorization)
+    supabase.table("challenges").delete().eq("id", id).eq("user_id", user_id).execute()
     return {"message": "Challenge deleted"}
 
 
 @app.post("/api/challenges/{challenge_id}/checkin")
-def checkin(challenge_id: str, body: CheckInRequest):
-    # get current streak first
-    result = supabase.table("players").select("streak").eq("id", body.player_id).execute()
-    current_streak = result.data[0]["streak"]
-    
-    # update with incremented value
+def checkin(challenge_id: str, authorization: str = Header(None)):
+    user_id = get_user_id(authorization)
+
+    result = supabase.table("players").select("id, streak")\
+        .eq("challenge_id", challenge_id)\
+        .eq("user_id", user_id)\
+        .execute()
+
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    player = result.data[0]
     supabase.table("players")\
-        .update({"streak": current_streak + 1, "checked_in_today": True})\
-        .eq("id", body.player_id)\
+        .update({"streak": player["streak"] + 1, "checked_in_today": True})\
+        .eq("id", player["id"])\
         .execute()
     return {"message": "checked in"}
     

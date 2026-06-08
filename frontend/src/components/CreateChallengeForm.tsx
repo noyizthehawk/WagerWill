@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Challenge, ChallengeType } from '../types/challengeCard'
 
+
 /*make props,we would dynammically add a challenge later */
 type Props = {
   onAdd: (challenge: Challenge) => void
@@ -25,13 +26,10 @@ export default function CreateChallengeForm({ onAdd }: Props) {
     })
   }
   /**nandle submit */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => { //async function
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    const response = await fetch('/api/challenges', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    onAdd({
+      id: '',
       habitName: form.habitName,
       type: form.type,
       duration: Number(form.duration),
@@ -39,13 +37,9 @@ export default function CreateChallengeForm({ onAdd }: Props) {
       prizePool: Number(form.entryFee),
       daysRemaining: Number(form.duration),
       status: 'active',
+      players: [],
     })
-    
-  })
-
-  const newChallenge = await response.json()
-  onAdd(newChallenge)
-  navigate('/dashboard')
+    navigate('/dashboard')
   }
 
   return (

@@ -29,8 +29,12 @@ function App() {
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
 
-  const fetchChallenges = () => { //fetch challenges from backend
-    fetch('/api/challenges')
+  const fetchChallenges = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    fetch('/api/challenges', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then((r) => r.json())
       .then((data) => {
         setChallenges(data)
@@ -45,26 +49,35 @@ function App() {
 
   // after adding a challenge, refetch from backend so data is always fresh
   const addChallenge = async (newChallenge: Challenge) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
     await fetch('/api/challenges', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify(newChallenge)
-    });
+    })
     fetchChallenges()
   }
 
   const deleteChallenge = async (challengeId: string) => {
-    await fetch(`/api/challenges/${challengeId}`, { method: 'DELETE' })
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+    await fetch(`/api/challenges/${challengeId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    })
     fetchChallenges()
   }
 
   const checkIn = async (challengeId: string, playerId: string) => {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
     await fetch(`/api/challenges/${challengeId}/checkin`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({ player_id: playerId })
     })
-    fetchChallenges() // refetch fresh data from backend after checkin saved
+    fetchChallenges()
   }
 
   return (
