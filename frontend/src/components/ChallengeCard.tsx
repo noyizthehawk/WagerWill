@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Challenge, ChallengeType } from '../types/challengeCard'
+import { useState } from 'react'
+import { supabase } from '../lib/supabase'
 
 const typeConfig: Record<ChallengeType, { gradient: string }> = {
   running: { gradient: 'from-orange-500 to-red-600' },
@@ -12,17 +14,43 @@ const typeConfig: Record<ChallengeType, { gradient: string }> = {
 type Props = {
   challengeCard: Challenge
   onDelete: (id: string) => void
+  user: any
 }
 
-export default function ChallengeCard({ challengeCard, onDelete }: Props) {
+export default function ChallengeCard({ challengeCard, onDelete, user }: Props) {
   const navigate = useNavigate()
   const config = typeConfig[challengeCard.type]
+
+  const [showInvite, setShowInvite] = useState(false)
+
+  const handleInviteSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const email = e.currentTarget.email.value
+
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token
+
+    await fetch('/api/invites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        challenge_id: Number(challengeCard.id),
+        invited_email: email,
+      })
+    })
+
+    setShowInvite(false)
+  }
+  
+  console.log('user:', user)
+  console.log('challenge userId:', challengeCard.userId)
 
   return (
     <div className="rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/10 hover:border-white/20 transition cursor-pointer w-64 shrink-0">
 
       <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
-        <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`} />
+        <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`}>
+        </div>
       </Link>
 
       <div className="p-4 flex flex-col gap-3">
@@ -64,7 +92,19 @@ export default function ChallengeCard({ challengeCard, onDelete }: Props) {
         >
           Delete
         </button>
+        {user?.id === challengeCard.userId && (
+         <button onClick={() => setShowInvite(true)}>Invite Friends</button>
+        )}
+        {showInvite && (
+          <form  onSubmit={handleInviteSubmit}>
+            <input name="email" placeholder="Friend's email" />
+            <button type="submit" >Send Invite</button>
+            <button type="button" onClick={() => setShowInvite(false)}>Cancel</button>
+          </form>
+        )}
       </div>
     </div>
+    
   )
+  
 }

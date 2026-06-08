@@ -8,6 +8,7 @@ import CheckInPage from './pages/CheckInPage'
 import ChallengeDetailPage from './pages/ChallengeDetailPage'
 import SignupPage from './pages/SignupPage'
 import LoginPage from './pages/LoginPage'
+import AcceptInvite from './pages/AcceptInvite'
 import { supabase } from './lib/supabase'
 import { Navigate } from 'react-router-dom'
 function App() {
@@ -20,8 +21,10 @@ function App() {
     })
 
     // listen for login/logout changes
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+        setUser(session?.user ?? null)
+      }
     })
 
     return () => listener.subscription.unsubscribe()
@@ -43,9 +46,9 @@ function App() {
       .catch(() => setLoading(false))
   }
 
-  useEffect(() => { //fetch challenges on page load
-    fetchChallenges()
-  }, [])//empty dependency array, so it runs once on page load
+  useEffect(() => {
+    if (user) fetchChallenges()
+  }, [user]) // re-fetch when user logs in or out
 
   // after adding a challenge, refetch from backend so data is always fresh
   const addChallenge = async (newChallenge: Challenge) => {
@@ -87,6 +90,7 @@ function App() {
         <Link to="/">Home</Link>
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/challenge/new">Create Challenge</Link>
+        <Link to="/invites">Invites</Link>
         {user ? (
           <>
             <span className="text-[#888] text-sm ml-auto">{user.email}</span>
@@ -108,7 +112,7 @@ function App() {
             element={
               !user ? <Navigate to="/login" /> : 
               loading ? <p className="p-6 text-white">Loading...</p> : 
-              <DashboardPage challenges={challenges} onDelete={deleteChallenge} />
+              <DashboardPage challenges={challenges} onDelete={deleteChallenge} user={user} />
             } 
           />
         <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
@@ -116,6 +120,8 @@ function App() {
         <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/invites" element={<AcceptInvite onAccept={fetchChallenges} />} />
+        
       </Routes>
     </BrowserRouter>
   )

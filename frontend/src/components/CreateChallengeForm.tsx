@@ -31,6 +31,7 @@ export default function CreateChallengeForm({ onAdd }: Props) {
     onAdd({
       id: '',
       habitName: form.habitName,
+      userId: '',
       type: form.type,
       duration: Number(form.duration),
       entryFee: Number(form.entryFee),

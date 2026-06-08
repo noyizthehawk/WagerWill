@@ -4,15 +4,17 @@ import ChallengeCard from '../components/ChallengeCard'
 type Props = {
   challenges: Challenge[]
   onDelete: (id: string) => void
+  user: any
+
 }
 
-export default function DashboardPage({ challenges, onDelete }: Props) {
+export default function DashboardPage({ challenges, onDelete, user }: Props) {
   return (
     <div className="p-6">
       <h1 className="text-white font-bold text-2xl mb-6">My Challenges</h1>
       <div className="flex gap-4 overflow-x-auto pb-4">
         {challenges.map((challenge) => (
-          <ChallengeCard key={challenge.id} challengeCard={challenge} onDelete={onDelete} />
+          <ChallengeCard key={challenge.id} challengeCard={challenge} onDelete={onDelete} user={user} />
         ))}
       </div>
     </div>

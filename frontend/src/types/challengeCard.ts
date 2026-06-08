@@ -10,6 +10,7 @@ export type ChallengeType = 'running' | 'gym' | 'cycling' | 'steps' | 'custom'
 
 export type Challenge = {
   id: string
+  userId: string
   habitName: string
   type: ChallengeType
   duration: number
