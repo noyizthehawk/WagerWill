@@ -166,6 +166,25 @@ def checkin(challenge_id: str, body: CheckInRequest, authorization: str = Header
     }).execute()
 
     return {"message": "checked in"}
+
+@app.get("/api/challenges/{challenge_id}/checkins")
+def get_checkins(challenge_id: str, authorization: str = Header(None)):
+    get_user_id(authorization)
+    result = supabase_admin.table("check_ins")\
+        .select("*, players(name)")\
+        .eq("challenge_id", int(challenge_id))\
+        .order("created_at", desc=True)\
+        .execute()
+    return [
+        {
+            "id": str(row["id"]),
+            "playerName": row["players"]["name"],
+            "evidenceUrl": row["evidence_url"],
+            "createdAt": row["created_at"],
+        }
+        for row in result.data
+    ]
+
 @app.post("/api/invites")
 def invite(invite: InviteCreate, authorization: str = Header(None)):
       inviter_id = get_user_id(authorization)

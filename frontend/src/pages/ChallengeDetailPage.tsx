@@ -25,11 +25,13 @@ export default function ChallengeDetailPage({ challenges, onDelete }: Props) {
       <h1>{challenge.habitName}</h1>
       <p>{challenge.status}</p>
       <div>
-        {challenge.players
-          .sort((a, b) => b.streak - a.streak)
-          .map((p) => (
-            <p key={p.id}>{p.name}: {p.streak} days</p>
-          ))}
+        <button onClick = {() => navigate(`/challenge/${challenge.id}/evidence`)}>
+          {challenge.players
+            .sort((a, b) => b.streak - a.streak)
+            .map((p) => (
+              <p key={p.id}>{p.name}: {p.streak} days</p>
+            ))}
+          </button>
       </div>
       <button
         onClick={handleDelete}

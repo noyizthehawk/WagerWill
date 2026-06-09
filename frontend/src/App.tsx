@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage'
 import AcceptInvite from './pages/AcceptInvite'
 import { supabase } from './lib/supabase'
 import { Navigate } from 'react-router-dom'
+import EvidencePage from './pages/EvidencePage'
 function App() {
   const [user, setUser] = useState<any>(null)
 
@@ -131,6 +132,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/invites" element={<AcceptInvite onAccept={fetchChallenges} />} />
+        <Route path="/challenge/:id/evidence" element={<EvidencePage />} />
         
       </Routes>
     </BrowserRouter>
