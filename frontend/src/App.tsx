@@ -107,65 +107,55 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* Header */}
-      <header className="flex items-center justify-between px-8 py-5">
-        <div className="flex items-center gap-4">
-          {user && (
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 transition hover:bg-gray-100"
-              aria-label="Toggle menu"
-            >
-              {/* hamburger icon */}
-              <div className="space-y-1.5">
-                <span className="block h-0.5 w-5 bg-gray-700"></span>
-                <span className="block h-0.5 w-5 bg-gray-700"></span>
-                <span className="block h-0.5 w-5 bg-gray-700"></span>
-              </div>
-            </button>
-          )}
-          <Link to="/" className="font-display text-2xl tracking-wide text-gray-900">
-            WAGERWILL
-          </Link>
-        </div>
-        {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-400">{user.email}</span>
-            <button
-              onClick={() => supabase.auth.signOut()}
-              className="text-red-600"
-            >
-              Log out
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-4">
-            <Link to="/login" className="text-sm font-medium text-gray-600 transition hover:text-gray-900">Log in</Link>
-            <Link
-              to="/signup"
-              className="rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
-            >
-              Sign up
-            </Link>
-          </div>
-        )}
-      </header>
+      <div className="flex h-screen overflow-hidden">
 
-      {/* Body: sidebar + main */}
-      <div className="flex">
-        {/* Sidebar — toggled open/closed */}
-        {user && sidebarOpen && (
-          <aside className="w-56 shrink-0 px-4 py-6">
-            <nav className="flex flex-col gap-1">
-              <Link onClick={() => setSidebarOpen(false)} to="/dashboard" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Dashboard</Link>
-              <Link onClick={() => setSidebarOpen(false)} to="/challenge/new" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Create Challenge</Link>
-              <Link onClick={() => setSidebarOpen(false)} to="/invites" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Invites</Link>
-            </nav>
+        {/* Sidebar */}
+        {user && (
+          <aside className={`${sidebarOpen ? 'w-56' : 'w-0'} shrink-0 overflow-hidden transition-all duration-300 border-r border-gray-200 flex flex-col`}>
+            <div className="px-4 py-6 flex flex-col h-full">
+              <nav className="font-game flex flex-col gap-1 flex-1">
+                <Link onClick={() => setSidebarOpen(false)} to="/dashboard" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Dashboard</Link>
+                <Link onClick={() => setSidebarOpen(false)} to="/challenge/new" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Create Challenge</Link>
+                <Link onClick={() => setSidebarOpen(false)} to="/invites" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Invites</Link>
+              </nav>
+              <div className="font-game mt-auto px-2">
+                <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                <button onClick={() => supabase.auth.signOut()} className="mt-2 text-sm text-red-500 hover:text-red-700">Log out</button>
+              </div>
+            </div>
           </aside>
         )}
 
-        {/* Main content */}
-        <main className="flex-1">
+        {/* Right side: header + scrollable main */}
+        <div className="flex flex-col flex-1 overflow-hidden">
+
+          {/* Header */}
+          <header className="flex items-center justify-between px-8 py-5 border-b border-gray-200 shrink-0">
+            <div className="flex items-center gap-4">
+              {user && (
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 transition hover:bg-gray-100"
+                >
+                  <div className="space-y-1.5">
+                    <span className="block h-0.5 w-5 bg-gray-700"></span>
+                    <span className="block h-0.5 w-5 bg-gray-700"></span>
+                    <span className="block h-0.5 w-5 bg-gray-700"></span>
+                  </div>
+                </button>
+              )}
+              <Link to="/" className="font-display text-xl text-gray-900">WAGERWILL</Link>
+            </div>
+            {!user && (
+              <div className="flex items-center gap-4">
+                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">Log in</Link>
+                <Link to="/signup" className="rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white hover:bg-gray-700">Sign up</Link>
+              </div>
+            )}
+          </header>
+
+          {/* Main content — scrollable */}
+          <main className="flex-1 overflow-y-auto">
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route
@@ -199,7 +189,8 @@ function App() {
               <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
               <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
           </Routes>
-        </main>
+          </main>
+        </div>
       </div>
     </BrowserRouter>
   )
