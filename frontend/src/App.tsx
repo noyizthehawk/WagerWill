@@ -14,6 +14,11 @@ import { Navigate } from 'react-router-dom'
 import EvidencePage from './pages/EvidencePage'
 function App() {
   const [user, setUser] = useState<any>(null)
+  
+  function ProtectedRoute({ children }: { children: React.ReactNode }) {
+    if (!user) return <Navigate to="/login" />
+    return <>{children}</>
+  }
 
   useEffect(() => {
     // get current session on page load
@@ -48,7 +53,12 @@ function App() {
   }
 
   useEffect(() => {
-    if (user) fetchChallenges()
+    if (user) {
+      fetchChallenges()
+    } else {
+      setChallenges([]) // clear old data immediately when user logs out
+      setLoading(true)  // reset loading state
+    }
   }, [user]) // re-fetch when user logs in or out
 
   // after adding a challenge, refetch from backend so data is always fresh
@@ -99,11 +109,11 @@ function App() {
       <nav className="flex items-center gap-6 px-6 py-4 border-b border-white/10">
         <span className="font-bold text-white mr-4">WagerWill</span>
         <Link to="/">Home</Link>
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/challenge/new">Create Challenge</Link>
-        <Link to="/invites">Invites</Link>
         {user ? (
           <>
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/challenge/new">Create Challenge</Link>
+            <Link to="/invites">Invites</Link>
             <span className="text-[#888] text-sm ml-auto">{user.email}</span>
             <button onClick={() => supabase.auth.signOut()} className="text-sm text-red-400">
               Log out
@@ -111,7 +121,7 @@ function App() {
           </>
         ) : (
           <>
-            <Link to="/login">Log in</Link>
+            <Link to="/login" className="ml-auto">Log in</Link>
             <Link to="/signup">Sign up</Link>
           </>
         )}
@@ -126,14 +136,29 @@ function App() {
               <DashboardPage challenges={challenges} onDelete={deleteChallenge} onLeave={leaveChallenge} user={user} />
             } 
           />
-        <Route path="/challenge/new" element={<CreateChallengePage onAdd={addChallenge} />} />
-        <Route path="/challenge/:id/checkin" element={<CheckInPage challenges={challenges} onCheckIn={checkIn} user={user} />} />
-        <Route path="/challenge/:id/challengedetail" element={<ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/invites" element={<AcceptInvite onAccept={fetchChallenges} />} />
-        <Route path="/challenge/:id/evidence" element={<EvidencePage />} />
-        
+          <Route path="/challenge/new" element={
+            <ProtectedRoute><CreateChallengePage onAdd={addChallenge} /></ProtectedRoute>
+          } />
+
+          <Route path="/challenge/:id/checkin" element={
+            <ProtectedRoute><CheckInPage challenges={challenges} onCheckIn={checkIn} user={user} /></ProtectedRoute>
+          } />
+
+          <Route path="/challenge/:id/challengedetail" element={
+            <ProtectedRoute><ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} /></ProtectedRoute>
+          } />
+
+          <Route path="/challenge/:id/evidence" element={
+            <ProtectedRoute><EvidencePage /></ProtectedRoute>
+          } />
+
+          <Route path="/invites" element={
+            <ProtectedRoute><AcceptInvite onAccept={fetchChallenges} /></ProtectedRoute>
+          } />
+
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
+          <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
+
       </Routes>
     </BrowserRouter>
   )
