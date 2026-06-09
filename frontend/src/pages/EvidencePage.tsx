@@ -23,14 +23,14 @@ export default function EvidencePage() {
 
   return (
     <div className="page">
-      <h1 className="text-white font-bold text-2xl mb-6">Evidence</h1>
+      <h1 className="text-gray-900 font-bold text-2xl mb-6">Evidence</h1>
       {checkIns.length === 0 && <p>No check-ins yet</p>}
       <div className="grid grid-cols-2 gap-4">
         {checkIns.map((c) => (
-          <div key={c.id} className="rounded-xl overflow-hidden bg-[#1a1a1a] border border-white/10">
+          <div key={c.id} className="rounded-xl overflow-hidden bg-white border border-gray-200 shadow-sm">
             <img src={c.evidenceUrl} alt="evidence" className="w-full h-48 object-cover" />
             <div className="p-3">
-              <p className="text-white text-sm font-semibold">{c.playerName}</p>
+              <p className="text-gray-900 text-sm font-semibold">{c.playerName}</p>
               <p className="text-gray-500 text-xs">{new Date(c.createdAt).toLocaleDateString()}</p>
             </div>
           </div>

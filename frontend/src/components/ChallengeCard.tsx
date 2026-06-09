@@ -47,7 +47,7 @@ export default function ChallengeCard({ challengeCard, onDelete, onLeave, user }
   console.log('challenge userId:', challengeCard.userId)
 
   return (
-    <div className="rounded-2xl overflow-hidden bg-[#1a1a1a] border border-white/10 hover:border-white/20 transition cursor-pointer w-64 shrink-0">
+    <div className="rounded-2xl overflow-hidden bg-white border border-gray-200 hover:border-gray-300 transition cursor-pointer w-64 shrink-0 shadow-sm">
 
       <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
         <div className={`bg-gradient-to-br ${config.gradient} h-40 flex items-center justify-center text-6xl`}>
@@ -57,7 +57,7 @@ export default function ChallengeCard({ challengeCard, onDelete, onLeave, user }
       <div className="p-4 flex flex-col gap-3">
         <div>
           <Link to={`/challenge/${challengeCard.id}/challengedetail`}>
-            <h2 className="text-white font-bold text-lg leading-tight hover:opacity-80 transition">
+            <h2 className="text-gray-900 font-bold text-lg leading-tight hover:opacity-80 transition">
               {challengeCard.habitName}
             </h2>
           </Link>
@@ -69,21 +69,21 @@ export default function ChallengeCard({ challengeCard, onDelete, onLeave, user }
         <div className="flex justify-between text-sm">
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-wide">Prize</p>
-            <p className="text-white font-semibold">${challengeCard.prizePool}</p>
+            <p className="text-gray-900 font-semibold">${challengeCard.prizePool}</p>
           </div>
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-wide">Entry</p>
-            <p className="text-white font-semibold">${challengeCard.entryFee}</p>
+            <p className="text-gray-900 font-semibold">${challengeCard.entryFee}</p>
           </div>
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-wide">Players</p>
-            <p className="text-white font-semibold">{challengeCard.players.length}</p>
+            <p className="text-gray-900 font-semibold">{challengeCard.players.length}</p>
           </div>
         </div>
 
         <button
           onClick={() => navigate(`/challenge/${challengeCard.id}/checkin`)}
-          className="w-full bg-white text-black font-semibold text-sm py-2 rounded-xl hover:bg-gray-200 transition"
+          className="w-full bg-gray-900 text-white font-semibold text-sm py-2 rounded-xl hover:bg-gray-700 transition"
         >
           Check in
         </button>

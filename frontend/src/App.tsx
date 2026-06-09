@@ -37,6 +37,7 @@ function App() {
   }, [])
   const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const fetchChallenges = async () => {
     const { data: { session } } = await supabase.auth.getSession()
@@ -106,60 +107,100 @@ function App() {
 
   return (
     <BrowserRouter>
-      <nav className="flex items-center gap-6 px-6 py-4 border-b border-white/10">
-        <span className="font-bold text-white mr-4">WagerWill</span>
-        <Link to="/">Home</Link>
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-5">
+        <div className="flex items-center gap-4">
+          {user && (
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-gray-700 transition hover:bg-gray-100"
+              aria-label="Toggle menu"
+            >
+              {/* hamburger icon */}
+              <div className="space-y-1.5">
+                <span className="block h-0.5 w-5 bg-gray-700"></span>
+                <span className="block h-0.5 w-5 bg-gray-700"></span>
+                <span className="block h-0.5 w-5 bg-gray-700"></span>
+              </div>
+            </button>
+          )}
+          <Link to="/" className="font-display text-2xl tracking-wide text-gray-900">
+            WAGERWILL
+          </Link>
+        </div>
         {user ? (
-          <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/challenge/new">Create Challenge</Link>
-            <Link to="/invites">Invites</Link>
-            <span className="text-[#888] text-sm ml-auto">{user.email}</span>
-            <button onClick={() => supabase.auth.signOut()} className="text-sm text-red-400">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-400">{user.email}</span>
+            <button
+              onClick={() => supabase.auth.signOut()}
+              className="text-red-600"
+            >
               Log out
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            <Link to="/login" className="ml-auto">Log in</Link>
-            <Link to="/signup">Sign up</Link>
-          </>
+          <div className="flex items-center gap-4">
+            <Link to="/login" className="text-sm font-medium text-gray-600 transition hover:text-gray-900">Log in</Link>
+            <Link
+              to="/signup"
+              className="rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-gray-700"
+            >
+              Sign up
+            </Link>
+          </div>
         )}
-      </nav>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route 
-            path="/dashboard" 
-            element={
-              !user ? <Navigate to="/login" /> : 
-              loading ? <p className="p-6 text-white">Loading...</p> : 
-              <DashboardPage challenges={challenges} onDelete={deleteChallenge} onLeave={leaveChallenge} user={user} />
-            } 
-          />
-          <Route path="/challenge/new" element={
-            <ProtectedRoute><CreateChallengePage onAdd={addChallenge} /></ProtectedRoute>
-          } />
+      </header>
 
-          <Route path="/challenge/:id/checkin" element={
-            <ProtectedRoute><CheckInPage challenges={challenges} onCheckIn={checkIn} user={user} /></ProtectedRoute>
-          } />
+      {/* Body: sidebar + main */}
+      <div className="flex">
+        {/* Sidebar — toggled open/closed */}
+        {user && sidebarOpen && (
+          <aside className="w-56 shrink-0 px-4 py-6">
+            <nav className="flex flex-col gap-1">
+              <Link onClick={() => setSidebarOpen(false)} to="/dashboard" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Dashboard</Link>
+              <Link onClick={() => setSidebarOpen(false)} to="/challenge/new" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Create Challenge</Link>
+              <Link onClick={() => setSidebarOpen(false)} to="/invites" className="rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-100 hover:text-gray-900">Invites</Link>
+            </nav>
+          </aside>
+        )}
 
-          <Route path="/challenge/:id/challengedetail" element={
-            <ProtectedRoute><ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} /></ProtectedRoute>
-          } />
+        {/* Main content */}
+        <main className="flex-1">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+                path="/dashboard"
+                element={
+                  !user ? <Navigate to="/login" /> :
+                  loading ? <p className="p-6 text-gray-900">Loading...</p> :
+                  <DashboardPage challenges={challenges} onDelete={deleteChallenge} onLeave={leaveChallenge} user={user} />
+                }
+              />
+              <Route path="/challenge/new" element={
+                <ProtectedRoute><CreateChallengePage onAdd={addChallenge} /></ProtectedRoute>
+              } />
 
-          <Route path="/challenge/:id/evidence" element={
-            <ProtectedRoute><EvidencePage /></ProtectedRoute>
-          } />
+              <Route path="/challenge/:id/checkin" element={
+                <ProtectedRoute><CheckInPage challenges={challenges} onCheckIn={checkIn} user={user} /></ProtectedRoute>
+              } />
 
-          <Route path="/invites" element={
-            <ProtectedRoute><AcceptInvite onAccept={fetchChallenges} /></ProtectedRoute>
-          } />
+              <Route path="/challenge/:id/challengedetail" element={
+                <ProtectedRoute><ChallengeDetailPage challenges={challenges} onDelete={deleteChallenge} /></ProtectedRoute>
+              } />
 
-          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
-          <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
+              <Route path="/challenge/:id/evidence" element={
+                <ProtectedRoute><EvidencePage /></ProtectedRoute>
+              } />
 
-      </Routes>
+              <Route path="/invites" element={
+                <ProtectedRoute><AcceptInvite onAccept={fetchChallenges} /></ProtectedRoute>
+              } />
+
+              <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <LoginPage />} />
+              <Route path="/signup" element={user ? <Navigate to="/dashboard" /> : <SignupPage />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   )
 }
