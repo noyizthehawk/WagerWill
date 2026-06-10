@@ -38,12 +38,15 @@ export default function AcceptInvite({ onAccept }: Props) {
 
   return (
     <div className="page">
-      <h1>Pending Invites</h1>
+      <h1 className='font-display text-gray-900 text-8xl'>Pending Invites</h1>
       {invites.length === 0 && <p>No pending invites</p>}
       {invites.map((invite) => (
-        <div key={invite.id}>
-          <p>{invite.challengeName}</p>
-          <button onClick={() => handleAccept(invite.challengeId)}>Accept</button>
+        <div key={invite.id} className="card mt-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-gray-900">{invite.challengeName}</h2>
+            <p className="text-sm">Invited by {invite.inviterEmail}</p>
+          </div>
+          <button className="btn-primary" onClick={() => handleAccept(invite.challengeId)}>Accept</button>
         </div>
       ))}
     </div>

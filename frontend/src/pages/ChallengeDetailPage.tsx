@@ -22,7 +22,7 @@ export default function ChallengeDetailPage({ challenges, onDelete }: Props) {
 
   return (
     <div className="page">
-      <h1>{challenge.habitName}</h1>
+      <h1 className="font-display text-gray-900 text-8xl">{challenge.habitName}</h1>
       <p>{challenge.status}</p>
       <div>
         <button onClick = {() => navigate(`/challenge/${challenge.id}/evidence`)}>

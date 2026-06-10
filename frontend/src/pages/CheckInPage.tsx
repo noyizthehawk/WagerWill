@@ -58,7 +58,7 @@ export default function CheckInPage({ challenges, onCheckIn, user }: Props) {
 
   return (
     <div className="page">
-      <h1>Check in: {challenge.habitName}</h1>
+      <h1 className="font-display text-gray-900 text-8xl">Check in: {challenge.habitName}</h1>
       <p>{challenge.daysRemaining} days remaining</p>
       {challenge.players.map((p) => (
         <p key={p.id}>{p.name}: {p.streak} days {p.checkedInToday ? '✓' : ''}</p>

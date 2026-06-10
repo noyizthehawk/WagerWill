@@ -280,11 +280,20 @@ def get_invites(authorization: str = Header(None)):
         .eq("status", "pending")\
         .execute()
 
+    # resolve each inviter's email, caching lookups so we don't refetch the same user
+    inviter_emails: dict[str, str] = {}
+    def inviter_email(inviter_id):
+        if inviter_id not in inviter_emails:
+            inviter = supabase_admin.auth.admin.get_user_by_id(inviter_id)
+            inviter_emails[inviter_id] = inviter.user.email
+        return inviter_emails[inviter_id]
+
     return [
         {
             "id": str(row["id"]),
             "challengeId": str(row["challenge_id"]),
             "challengeName": row["challenges"]["habit_name"],
+            "inviterEmail": inviter_email(row["inviter_id"]),
             "status": row["status"],
         }
         for row in result.data

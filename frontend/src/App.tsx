@@ -148,8 +148,8 @@ function App() {
             </div>
             {!user && (
               <div className="flex items-center gap-4">
-                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">Log in</Link>
-                <Link to="/signup" className="rounded-full bg-gray-900 px-5 py-2 text-sm font-semibold text-white hover:bg-gray-700">Sign up</Link>
+                <Link to="/login" className="font-game rounded-full px-5 py-2 text-sm font-semibold text-red-500 hover:text-red-700">Log in</Link>
+                <Link to="/signup" className="font-game rounded-full  px-5 py-2 text-sm font-semibold text-red-500 hover:bg-red-600">Sign up</Link>
               </div>
             )}
           </header>

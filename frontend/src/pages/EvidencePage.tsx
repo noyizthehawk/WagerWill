@@ -23,7 +23,7 @@ export default function EvidencePage() {
 
   return (
     <div className="page">
-      <h1 className="text-gray-900 font-bold text-2xl mb-6">Evidence</h1>
+      <h1 className="font-display text-gray-900 text-8xl mb-6">Evidence</h1>
       {checkIns.length === 0 && <p>No check-ins yet</p>}
       <div className="grid grid-cols-2 gap-4">
         {checkIns.map((c) => (
